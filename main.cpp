@@ -1,6 +1,13 @@
 
 
+#include "lindows.h"
+
 #include <stdio.h>
+#include <string.h>
+#include "debug.h"
+#include "debug01.h"
+#include "options.h"
+
 
 #ifdef WINDOZE
 int isPowerOfTwo64 (unsigned __int64 x);
@@ -8,8 +15,13 @@ int isPowerOfTwo64 (unsigned __int64 x);
 int isPowerOfTwo64 (unsigned long long x);
 #endif
 
+
+char *szProgFilename = NULL;
+
+
 int main (int argc, char **argv)
 {
+/*
 #ifdef WINDOZE
 	unsigned __int64 ullint = 0;
 #else
@@ -46,9 +58,36 @@ int main (int argc, char **argv)
 #endif
 		ullint = ullint <<1;
 	}
+*/
+	int retval = 0;
+	if( ( retval = debug_init ((void**)&options) ) ) {
+		printf("bad debug init\n");
+		return(retval);
+	}
+
+	if (!argv[0])
+		szProgFilename = (char *)"main";
+	else
+	if ((szProgFilename = strrchr(argv[0], '/')))
+		szProgFilename++;
+#if WINDOZE
+	else
+	if ((szProgFilename = strrchr(argv[0], '\\')))
+		szProgFilename++;
+#endif
+	else
+		szProgFilename = argv[0];
+
+	load_debug ();
 
 
+	if( ( retval = set_debug_device ((char*)"RAM") ) ) {
+		printf("bad debug device type\n");
+		return(retval);
+	}
 
+
+	debug_close ();
 
 	return 0;
 }
