@@ -64,33 +64,33 @@
 #include "jumbo.h"
 #include "memdbg.h"
 */
-struct options_main options;
+extern DEBUGOPTIONSTYPE myoptions;
 
 static struct opt_entry opt_list[] = {
-//		{(char*)"", FLG_PASSWD, 0, 0, 0, OPT_FMT_ADD_LIST, &options.passwd},
-	{(char*)"", FLG_PASSWD, 0, 0, 0, (char*)OPT_FMT_ADD_LIST, &options.passwd},
+//		{(char*)"", FLG_PASSWD, 0, 0, 0, OPT_FMT_ADD_LIST, &myoptions.passwd},
+	{(char*)"", FLG_PASSWD, 0, 0, 0, (char*)OPT_FMT_ADD_LIST, &myoptions.passwd},
 
 #if defined DEBUG
 	{(char*)"debug-level", FLG_NONE, 0, 0, OPT_REQ_PARAM,
-							(char*)"%d", &options.debug_level},
+							(char*)"%d", &myoptions.debug_level},
 	{(char*)"debug-flags", FLG_NONE, 0, 0, OPT_REQ_PARAM,
-			(char*)OPT_FMT_ADD_LIST_MULTI, &options.debug_flags},
+			(char*)OPT_FMT_ADD_LIST_MULTI, &myoptions.debug_flags},
 	{(char*)"debug-server", FLG_NONE, 0, 0, OPT_REQ_PARAM,
-			(char*)OPT_FMT_STR_ALLOC, &options.debug_server_name},
+			(char*)OPT_FMT_STR_ALLOC, &myoptions.debug_server_name},
 	{(char*)"debug-port", FLG_NONE, 0, 0, OPT_REQ_PARAM,
-							(char*)"%d", &options.degug_port_number},
+							(char*)"%d", &myoptions.degug_port_number},
 	{(char*)"debug-filename", FLG_NONE, 0, 0, OPT_REQ_PARAM,
-			(char*)OPT_FMT_STR_ALLOC, &options.debug_filename},
+			(char*)OPT_FMT_STR_ALLOC, &myoptions.debug_filename},
 	{(char*)"debug-device", FLG_NONE, 0, 0, OPT_REQ_PARAM,
-			(char*)OPT_FMT_STR_ALLOC, &options.debug_device},
+			(char*)OPT_FMT_STR_ALLOC, &myoptions.debug_device},
 	{(char*)"debug-color", FLG_NONE, 0, 0, OPT_REQ_PARAM,
-							(char*)"%d", &options.debug_color_flag},
+							(char*)"%d", &myoptions.debug_color_flag},
 	{(char*)"debug-clrscr", FLG_NONE, 0, 0, OPT_REQ_PARAM,
-							(char*)"%d", &options.debug_clear_screen},
+							(char*)"%d", &myoptions.debug_clear_screen},
 	{(char*)"debug-mask", FLG_NONE, 0, 0, OPT_REQ_PARAM,
-			(char*)OPT_FMT_ADD_LIST_MULTI, &options.debug_mask_messages},
+			(char*)OPT_FMT_ADD_LIST_MULTI, &myoptions.debug_mask_messages},
 	{(char*)"debug-force", FLG_NONE, 0, 0, OPT_REQ_PARAM,
-			(char*)OPT_FMT_ADD_LIST_MULTI, &options.debug_display_messages},
+			(char*)OPT_FMT_ADD_LIST_MULTI, &myoptions.debug_display_messages},
 #endif
 
 	{NULL}
@@ -230,25 +230,36 @@ void opt_init(char *name, int argc, char **argv, int show_usage)
 	if (show_usage)
 		print_usage(name);
 
+
+	memset(&myoptions, 0, sizeof(myoptions));
+
+//	options.loader.field_sep_char = ':';
+//	options.max_wordfile_memory = WORDLIST_BUFFER_DEFAULT;
+//	options.req_minlength = -1;
+
+//	if (!options.verbosity)
+//		options.verbosity = VERB_DEFAULT;
+
+
 #if defined DEBUG
-	list_init(&options.debug_flags);
-	list_init(&options.debug_mask_messages);
-	list_init(&options.debug_display_messages);
+	list_init(&myoptions.debug_flags);
+	list_init(&myoptions.debug_mask_messages);
+	list_init(&myoptions.debug_display_messages);
 
 #endif
 
 
 #ifdef DEBUG
-	if ( !options.debug_level &&
-	    ( options.debug_flags->count == 0) ) {
-		list_add(options.debug_flags, (char*)"none");
+	if ( !myoptions.debug_level &&
+	    ( myoptions.debug_flags->count == 0) ) {
+		list_add(myoptions.debug_flags, (char*)"none");
 	}
 #endif
 
 
-	opt_process(opt_list, &options.flags, argv);
+	opt_process(opt_list, &myoptions.flags, argv);
 
-	opt_check(opt_list, options.flags, argv);
+	opt_check(opt_list, myoptions.flags, argv);
 
 
 //	rec_argc = argc; rec_argv = argv;

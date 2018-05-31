@@ -206,15 +206,16 @@
 /*
  * Structure with option flags and all the parameters.
  */
+/*
 struct options_main {
-/* Option flags */
+// Option flags
 	opt_flags flags;
 
-	/* Password files */
+	// Password files
 	struct list_main *passwd;
 
 #ifdef DEBUG
-/* debug options */
+// debug options
 	unsigned int debug_level;
 	struct list_main *debug_flags;
 	char * debug_server_name;
@@ -230,6 +231,7 @@ struct options_main {
 };
 
 extern struct options_main options;
+*/
 
 /*
  * Initializes the options structure.

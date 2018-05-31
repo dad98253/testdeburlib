@@ -22,6 +22,7 @@
 #include "getopt.h"
 #include "options.h"
 
+extern DEBUGOPTIONSTYPE myoptions;
 
 void load_debug () 
 {
@@ -32,12 +33,20 @@ void load_debug ()
 	int iflagset;
 	const char *isset[] = { "not set", "set" };
 
-	if ( options.debug_level > 0 ) fprintf(stderr,"   debug verbosity = %i\n",options.debug_level);
-//	if ( options.debug_level > 0 ) debugInitialVirbosity = debugVirbosity = options.debug_level;
+// note: the TRACE debug flag is initially turned on in debug_init to permit generation of
+// debug print output prior to the load_debug call. We will now turn it back off. If the user
+// wants TRACE turned on following this call, he will need to specify --debug-flags=TRACE as a
+// calling argument to the program
+	bdebug_flag_set[TRACE] = 0;
+
+	if ( myoptions.debug_level > 0 ) {
+		fprintf(stderr,"   debug verbosity = %i\n",myoptions.debug_level);
+		debugInitialVirbosity = debugVirbosity =   myoptions.debug_level;
+	}
 
 	bdebug_flag_set[0] = bdebug_flag_set[NUMDEBUGFLAGS-1] = 0;
 
-	if ( (current = options.debug_flags->head) )
+	if ( (current = myoptions.debug_flags->head) )
 	{
 		do {
 			k++;
@@ -59,7 +68,7 @@ void load_debug ()
 			if ( i != QUIET && i != NONE ) bdebug_flag_set[i]=1;
 		}
 	} 
-	if ( (current = options.debug_flags->head) ) {
+	if ( (current = myoptions.debug_flags->head) ) {
 		fprintf(stderr,"   debug flags set : ");
 		do {
 			fprintf(stderr, "%s", current->data);
@@ -68,47 +77,68 @@ void load_debug ()
 		fprintf(stderr,"\n");
 	}
 
-	int iDebugOutputDevicetemp = -1;
+	int iDebugOutputDevice = -1;
 
-	if ( options.debug_server_name != NULL ) printf("server name = %s\n", options.debug_server_name);
-	if ( options.degug_port_number != 0 ) printf ("port number = %i\n",options.degug_port_number);
-	if ( options.debug_filename != NULL ) printf("debug file name = %s\n",options.debug_filename);
-	if ( options.debug_device != NULL ) {
+	if ( myoptions.debug_server_name != NULL ) {
+		printf("   server name = %s\n", myoptions.debug_server_name);
+		lpDebugServerName = myoptions.debug_server_name;
+	}
+	if ( myoptions.degug_port_number != 0 ) {
+		printf ("   port number = %i\n",myoptions.degug_port_number);
+		port = myoptions.degug_port_number;
+	}
+	if ( myoptions.debug_filename != NULL ) {
+		printf("   debug file name = %s\n",myoptions.debug_filename);
+		lpDebugOutputFileName = myoptions.debug_filename;
+	}
+	if ( myoptions.debug_device != NULL ) {
 		for(i = 0;i < DIMDEBUGDEVICES;i++) {
-			if ( strcmp (debug_devices[i] , options.debug_device) == 0 ) {
-				iDebugOutputDevicetemp = i;
-				printf("debug output device type index is %i, (%s)\n", i,debug_devices[i]);
+			if ( strcmp (debug_devices[i] , myoptions.debug_device) == 0 ) {
+				iDebugOutputDevice = i;
+				printf("   debug output device type index is %i, (%s)\n", i,debug_devices[i]);
 			}
 		}
-		if ( iDebugOutputDevicetemp == -1 ) {
-			//iDebugOutputDevice = BITBUCKET;
-			fprintf(stderr," %s is not a valid debug output device, see --list=debug-device\n", options.debug_device);
+		if ( iDebugOutputDevice == -1 ) {
+			iDebugOutputDevice = BITBUCKET;
+			fprintf(stderr," %s is not a valid debug output device, see --list=debug-device\n", myoptions.debug_device);
 			exit(EXIT_FAILURE);
 		}
 	}
-	if ( options.debug_color_flag != 0 ) { printf("color debug flag is set\n"); }
-		else printf("color debug flag is not set\n");
-	if ( options.debug_clear_screen > 0 && options.debug_clear_screen < 4) { printf("debug clear screen on exit flag is set to %i\n", options.debug_clear_screen); }
-		else printf("debug clear screen on exit flag is not set\n");
-	if ((current = options.debug_mask_messages->head)) {
-		printf("messages to mask:\n");
+	if ( myoptions.debug_color_flag != 0 ) {
+		printf("   color debug flag is set\n");
+		ColorDebug = 1;
+	}
+	else {
+		printf("   color debug flag is not set\n");
+		ColorDebug = 0;
+	}
+	if ( myoptions.debug_clear_screen > 0 && myoptions.debug_clear_screen < 4) {
+		printf("   debug clear screen on exit flag is set to %i\n", myoptions.debug_clear_screen);
+		ClearDebugScreenOnExit = myoptions.debug_clear_screen;
+	}
+	else {
+		printf("   debug clear screen on exit flag is not set\n");
+		ClearDebugScreenOnExit = 0;
+	}
+	if ((current = myoptions.debug_mask_messages->head)) {
+		printf("   messages to mask:\n");
 		do {
-			printf("   %s\n",current->data);
+			printf("      %s\n",current->data);
 		} while ((current = current->next));
 	}
-	if ((current = options.debug_display_messages->head)) {
-		printf("messages to display:\n");
+	if ((current = myoptions.debug_display_messages->head)) {
+		printf("   messages to display:\n");
 		do {
-			printf("   %s\n",current->data);
+			printf("      %s\n",current->data);
 		} while ((current = current->next));
 	}
 
 //	iDebugOutputDevice = iDebugOutputDeviceSave;
 //	if (debugflag > 0) {
-		if ( set_debug_device(options.debug_device) ) {
+		if ( set_debug_device(myoptions.debug_device) ) {
 			fprintf(stderr,"set_debug_device failed\n");
 		} else {
-			dfprintf(__LINE__,__FILE__,DEBUGINIT,"\33[1;32mDebug output device set to type %i\33[0m (%s)\n", iDebugOutputDevicetemp,debug_devices[iDebugOutputDevicetemp]);
+			dfprintf(__LINE__,__FILE__,DEBUGINIT,"\33[1;32mDebug output device set to type %i\33[0m (%s)\n", iDebugOutputDevice,debug_devices[iDebugOutputDevice]);
 			iflagset = 0;
 #ifdef JUMBO_JTR
 			iflagset = 1;

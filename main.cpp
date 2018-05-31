@@ -18,6 +18,8 @@ int isPowerOfTwo64 (unsigned long long x);
 
 char *szProgFilename = NULL;
 
+DEBUGOPTIONSTYPE myoptions;
+DEBUGOPTIONSTYPE* pmyoptions = NULL;
 
 int main (int argc, char **argv)
 {
@@ -59,8 +61,14 @@ int main (int argc, char **argv)
 		ullint = ullint <<1;
 	}
 */
+#ifdef DEBUG
+	printf("   DEBUG is set\n");
+#else	// DEBUG
+	printf("   DEBUG is not set\n");
+#endif	// DEBUG
+	pmyoptions = &myoptions;
 	int retval = 0;
-	if( ( retval = debug_init ((void**)&options) ) ) {
+	if( ( retval = debug_init ((void**)&pmyoptions, 1 )) ) {
 		printf("bad debug init\n");
 		return(retval);
 	}
@@ -78,14 +86,41 @@ int main (int argc, char **argv)
 	else
 		szProgFilename = argv[0];
 
+#ifdef WINDOZE
+	strlwr(szProgFilename);
+	if (strlen(szProgFilename) > 4 && !strcmp(szProgFilename + strlen(szProgFilename) - 4, ".exe"))
+		szProgFilename[strlen(szProgFilename) - 4] = 0;
+#endif
+
+
+
+
+	dfprintf(__LINE__,__FILE__,TRACE,"main: checking for help call\n");
+	int show_usage = 0;
+	if (argc < 2 ||
+            (argc == 2 &&
+             (!strcasecmp(argv[1], "--help") ||
+              !strcasecmp(argv[1], "-h") ||
+              !strcasecmp(argv[1], "-help"))))
+	{
+		dfprintf(__LINE__,__FILE__,TRACE,"main: detected show usage request\n");
+		show_usage = 1;
+	}
+
+	dfprintf(__LINE__,__FILE__,TRACE,"main: calling opt_init...\n");
+	opt_init(szProgFilename, argc, argv, show_usage);
+
+	dfprintf(__LINE__,__FILE__,TRACE,"main: calling load_debug...\n");
 	load_debug ();
 
+	dfprintf(__LINE__,__FILE__,TRACE,"main: returned from load_debug...\n");
 
+/*
 	if( ( retval = set_debug_device ((char*)"RAM") ) ) {
 		printf("bad debug device type\n");
 		return(retval);
 	}
-
+*/
 
 	debug_close ();
 
