@@ -1,6 +1,11 @@
 
-
+#ifndef WINDOZE
 #include "lindows.h"
+#endif	// WINDOZE
+
+#define NEED_OS_FORK
+#undef _GNU_SOURCE
+#define _GNU_SOURCE 1 /* for strcasestr in legacy builds */
 
 #include <stdio.h>
 #include <string.h>
@@ -99,9 +104,9 @@ int main (int argc, char **argv)
 	int show_usage = 0;
 	if (argc < 2 ||
             (argc == 2 &&
-             (!strcasecmp(argv[1], "--help") ||
-              !strcasecmp(argv[1], "-h") ||
-              !strcasecmp(argv[1], "-help"))))
+             (!_stricmp(argv[1], "--help") ||
+              !_stricmp(argv[1], "-h") ||
+              !_stricmp(argv[1], "-help"))))
 	{
 		dfprintf(__LINE__,__FILE__,TRACE,"main: detected show usage request\n");
 		show_usage = 1;
