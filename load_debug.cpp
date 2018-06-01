@@ -19,7 +19,7 @@
 #include "debug.h"
 #include "debug01.h"
 #include "common.h"
-#include "getopt.h"
+//#include "getopt.h"
 #include "options.h"
 
 extern DEBUGOPTIONSTYPE myoptions;
