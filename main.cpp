@@ -22,6 +22,7 @@ int isPowerOfTwo64 (unsigned long long x);
 
 
 char *szProgFilename = NULL;
+BOOL bStdioRedirectedToConsole;
 
 DEBUGOPTIONSTYPE myoptions;
 DEBUGOPTIONSTYPE* pmyoptions = NULL;
