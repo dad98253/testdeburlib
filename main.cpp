@@ -1,6 +1,8 @@
 
 #ifndef WINDOZE
 #include "lindows.h"
+#include <strings.h>
+#define _stricmp	strcasecmp
 #endif	// WINDOZE
 
 #define NEED_OS_FORK
