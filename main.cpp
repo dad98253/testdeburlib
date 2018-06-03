@@ -101,7 +101,7 @@ int main (int argc, char **argv)
 
 
 
-	dfprintf(__LINE__,__FILE__,TRACE,"main: checking for help call\n");
+	dfprintf(__LINE__,__FILE__,TRACE,"checking for help call\n");
 	int show_usage = 0;
 	if (argc < 2 ||
             (argc == 2 &&
@@ -109,17 +109,17 @@ int main (int argc, char **argv)
               !_stricmp(argv[1], "-h") ||
               !_stricmp(argv[1], "-help"))))
 	{
-		dfprintf(__LINE__,__FILE__,TRACE,"main: detected show usage request\n");
+		dfprintf(__LINE__,__FILE__,TRACE,"detected show usage request\n");
 		show_usage = 1;
 	}
 
-	dfprintf(__LINE__,__FILE__,TRACE,"main: calling opt_init...\n");
+	dfprintf(__LINE__,__FILE__,TRACE,"calling opt_init...\n");
 	opt_init(szProgFilename, argc, argv, show_usage);
 
-	dfprintf(__LINE__,__FILE__,TRACE,"main: calling load_debug...\n");
+	dfprintf(__LINE__,__FILE__,TRACE,"calling load_debug...\n");
 	load_debug ();
 
-	dfprintf(__LINE__,__FILE__,TRACE,"main: returned from load_debug...\n");
+	dfprintf(__LINE__,__FILE__,TRACE,"returned from load_debug...\n");
 
 /*
 	if( ( retval = set_debug_device ((char*)"RAM") ) ) {
