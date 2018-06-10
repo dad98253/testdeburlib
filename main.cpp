@@ -29,6 +29,10 @@ BOOL bStdioRedirectedToConsole;
 DEBUGOPTIONSTYPE myoptions;
 DEBUGOPTIONSTYPE* pmyoptions = NULL;
 
+int locateLineNum ( long long unsigned int lluRelAddress , char * szFunctionName , char * szExeFile );
+extern char * jtrunwindln (int icall);
+extern char * szMainExeFile;
+
 int main (int argc, char **argv)
 {
 /*
@@ -129,6 +133,22 @@ int main (int argc, char **argv)
 		return(retval);
 	}
 */
+
+	// test jtrunwind
+	printf("\tjtrunwind (-1) =%s\n",jtrunwind (-1));
+	dfprintf(__LINE__,__FILE__,TRACE,"returned from jtrunwind (-1)...\n");
+	printf("\tjtrunwind (0) =%s\n",jtrunwind (0));
+	printf("\tjtrunwind (1) =%s\n",jtrunwind (1));
+	long long unsigned int lluRelAddress = 0x228;
+	const char * szFunctionName = "main";
+	char * szExeFile;
+	szExeFile = argv[0];
+	locateLineNum ( lluRelAddress ,  (char *)szFunctionName ,  szExeFile );
+	szMainExeFile = szExeFile;
+	printf("\tjtrunwindln (-1) =%s\n",jtrunwindln (-1));
+	printf("\tjtrunwindln (0) =%s\n",jtrunwindln (0));
+	printf("\tjtrunwindln (1) =%s\n",jtrunwindln (1));
+
 
 	debug_close ();
 
