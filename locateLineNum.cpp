@@ -312,7 +312,8 @@ print_subprog(Dwarf_Debug dbg,Dwarf_Die die, int level,
     if(filenum || linenum) {
 //        printf("<%3d> file: %" DW_PR_DUu " %s  line %"
 //            DW_PR_DUu "\n",level,filenum,filename?filename:"",linenum);
-    	filename = filename;
+    	printf("filenam = %s\n",filename);
+    	//filename = filename;
     }
     if(lowpc) {
 //        printf("<%3d> low_pc : 0x%" DW_PR_DUx  "\n",
