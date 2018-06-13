@@ -46,6 +46,7 @@
 #include <string.h>
 #include <dwarf.h>
 #include <libdwarf.h>
+#include <err.h>
 #include "debug.h"
 #include "debug01.h"
 
@@ -71,8 +72,8 @@ int locateLineNum ( long long unsigned int lluRelAddress , char * szFunctionName
     const char *filepath = "";
     int res = DW_DLV_ERROR;
     Dwarf_Error error;
-    Dwarf_Handler errhand = 0;
-    Dwarf_Ptr errarg = 0;
+    Dwarf_Handler errhand = NULL;
+    Dwarf_Ptr errarg = NULL;
     int linenumber = 0;
 
     if ( szExeFile != NULL ) {
@@ -90,7 +91,8 @@ int locateLineNum ( long long unsigned int lluRelAddress , char * szFunctionName
     res = dwarf_init(fd,DW_DLC_READ,errhand,errarg, &dbg,&error);
     if(res != DW_DLV_OK) {
         printf("Giving up, cannot do DWARF processing\n");
-        dfprintf(__LINE__,__FILE__,TRACE,"Giving up, cannot do DWARF processing\n");
+        errx(EXIT_FAILURE, "dwarf_init: %s", (char *)dwarf_errmsg(error));
+        dfprintf(__LINE__,__FILE__,TRACE,"Giving up, cannot do DWARF processing (%s)\n",dwarf_errmsg(error));
         return(-3);
     }
 
