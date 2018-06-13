@@ -330,15 +330,8 @@ print_subprog(Dwarf_Debug dbg,Dwarf_Die die, int level,
         dwarf_dealloc(dbg,attrbuf[i],DW_DLA_ATTR);
     }
     if(filenum || linenum) {
-<<<<<<< HEAD
         dfprintf(__LINE__,__FILE__,TRACEDWARFSUB,"<%3d> file: %" DW_PR_DUu " %s  line %"
             DW_PR_DUu "\n",level,filenum,filename?filename:"",linenum);
-=======
-//        printf("<%3d> file: %" DW_PR_DUu " %s  line %"
-//            DW_PR_DUu "\n",level,filenum,filename?filename:"",linenum);
-    	printf("filenam = %s\n",filename);
-    	//filename = filename;
->>>>>>> branch 'master' of https://github.com/dad98253/testdeburlib.git
     }
     if(lowpc) {
         dfprintf(__LINE__,__FILE__,TRACEDWARFSUB,"<%3d> low_pc : 0x%" DW_PR_DUx  "\n",
