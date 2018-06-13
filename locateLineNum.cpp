@@ -46,6 +46,8 @@
 #include <string.h>
 #include <dwarf.h>
 #include <libdwarf.h>
+#include "debug.h"
+#include "debug01.h"
 
 struct srcfilesdata {
     char ** srcfiles;
@@ -78,6 +80,7 @@ int locateLineNum ( long long unsigned int lluRelAddress , char * szFunctionName
     	fd = open(filepath,O_RDONLY);
     	if(fd < 0) {
     	    printf("Failure attempting to open \"%s\"\n",filepath);
+    	    dfprintf(__LINE__,__FILE__,TRACE,"Failure attempting to open \"%s\"\n",filepath);
     	    return(-2);
     	}
     } else {
@@ -87,6 +90,7 @@ int locateLineNum ( long long unsigned int lluRelAddress , char * szFunctionName
     res = dwarf_init(fd,DW_DLC_READ,errhand,errarg, &dbg,&error);
     if(res != DW_DLV_OK) {
         printf("Giving up, cannot do DWARF processing\n");
+        dfprintf(__LINE__,__FILE__,TRACE,"Giving up, cannot do DWARF processing\n");
         return(-3);
     }
 
@@ -95,6 +99,7 @@ int locateLineNum ( long long unsigned int lluRelAddress , char * szFunctionName
     res = dwarf_finish(dbg,&error);
     if(res != DW_DLV_OK) {
         printf("dwarf_finish failed!\n");
+        dfprintf(__LINE__,__FILE__,TRACE,"dwarf_finish failed!\n");
     }
     close(fd);
     return linenumber;
@@ -143,6 +148,7 @@ int linenumber = 0;
             &next_cu_header, &error);
         if(res == DW_DLV_ERROR) {
             printf("Error in dwarf_next_cu_header\n");
+            dfprintf(__LINE__,__FILE__,TRACE,"Error in dwarf_next_cu_header\n");
             exit(1);
         }
         if(res == DW_DLV_NO_ENTRY) {
@@ -153,16 +159,19 @@ int linenumber = 0;
         res = dwarf_siblingof(dbg,no_die,&cu_die,&error);
         if(res == DW_DLV_ERROR) {
             printf("Error in dwarf_siblingof on CU die \n");
+            dfprintf(__LINE__,__FILE__,TRACE,"Error in dwarf_siblingof on CU die \n");
             exit(1);
         }
         if(res == DW_DLV_NO_ENTRY) {
             /* Impossible case. */
             printf("no entry! in dwarf_siblingof on CU die \n");
+            dfprintf(__LINE__,__FILE__,TRACE,"no entry! in dwarf_siblingof on CU die \n");
             exit(1);
         }
         if (get_die_and_siblings(dbg,cu_die,0,&sf, &lluSubAdd, szFunctionName )){
 /* added by jck:... */
 //        	printf("..looking for lluRelAddress+lluSubAdd = %llx\n",lluRelAddress+lluSubAdd);
+        	dfprintf(__LINE__,__FILE__,TRACEDWARF,"..looking for lluRelAddress+lluSubAdd = %llx\n",lluRelAddress+lluSubAdd);
 			sres = dwarf_srclines(cu_die, &linebuf,&cnt, &error);
 			if (sres == DW_DLV_OK) {
 				line=linebuf;
@@ -176,9 +185,18 @@ int linenumber = 0;
 //								lluSubAdd,
 //								return_lineaddr,
 //								return_linesrc ? return_linesrc : "");
+				  dfprintf(__LINE__,__FILE__,TRACEDWARF2,"Line: %10llu    SubAdd: %10llx    Address: %10llx    File: %s\n"
+								,returned_lineno
+ //								,lluSubAdd
+								,0
+								,return_lineaddr
+ //								,return_linesrc ? return_linesrc : ""
+								,""
+								);
+
 				  line++;
 				  if ( (lluRelAddress+lluSubAdd)<return_lineaddr ) {
-//					  printf("found line... it's number %i !!!\n",linenumber);
+					  dfprintf(__LINE__,__FILE__,TRACEDWARF,"found line... it's number %i !!!\n",linenumber);
 					  break;
 				  }
 				  linenumber = (int)returned_lineno;
@@ -213,6 +231,7 @@ get_die_and_siblings(Dwarf_Debug dbg, Dwarf_Die in_die,int in_level,
         res = dwarf_child(cur_die,&child,&error);
         if(res == DW_DLV_ERROR) {
             printf("Error in dwarf_child , level %d \n",in_level);
+            dfprintf(__LINE__,__FILE__,TRACE,"Error in dwarf_child , level %d \n",in_level);
             exit(1);
         }
         if(res == DW_DLV_OK) {
@@ -222,6 +241,7 @@ get_die_and_siblings(Dwarf_Debug dbg, Dwarf_Die in_die,int in_level,
         res = dwarf_siblingof(dbg,cur_die,&sib_die,&error);
         if(res == DW_DLV_ERROR) {
             printf("Error in dwarf_siblingof , level %d \n",in_level);
+            dfprintf(__LINE__,__FILE__,TRACE,"Error in dwarf_siblingof , level %d \n",in_level);
             exit(1);
         }
         if(res == DW_DLV_NO_ENTRY) {
@@ -310,18 +330,17 @@ print_subprog(Dwarf_Debug dbg,Dwarf_Die die, int level,
         dwarf_dealloc(dbg,attrbuf[i],DW_DLA_ATTR);
     }
     if(filenum || linenum) {
-//        printf("<%3d> file: %" DW_PR_DUu " %s  line %"
-//            DW_PR_DUu "\n",level,filenum,filename?filename:"",linenum);
-    	filename = filename;
+        dfprintf(__LINE__,__FILE__,TRACEDWARFSUB,"<%3d> file: %" DW_PR_DUu " %s  line %"
+            DW_PR_DUu "\n",level,filenum,filename?filename:"",linenum);
     }
     if(lowpc) {
-//        printf("<%3d> low_pc : 0x%" DW_PR_DUx  "\n",
-//            level, (Dwarf_Unsigned)lowpc);
+        dfprintf(__LINE__,__FILE__,TRACEDWARFSUB,"<%3d> low_pc : 0x%" DW_PR_DUx  "\n",
+            level, (Dwarf_Unsigned)lowpc);
         *lluSubAdd = lowpc;
     }
     if(highpc) {
-//        printf("<%3d> high_pc: 0x%" DW_PR_DUx  "\n",
-//            level, (Dwarf_Unsigned)highpc);
+        dfprintf(__LINE__,__FILE__,TRACEDWARFSUB,"<%3d> high_pc: 0x%" DW_PR_DUx  "\n",
+            level, (Dwarf_Unsigned)highpc);
         *lluSubAdd = highpc;
     }
     dwarf_dealloc(dbg,attrbuf,DW_DLA_LIST);
@@ -349,8 +368,8 @@ print_comp_dir(Dwarf_Debug dbg,Dwarf_Die die,int level, struct srcfilesdata *sf)
                 char *name = 0;
                 res = dwarf_formstring(attrbuf[i],&name,&error);
                 if(res == DW_DLV_OK) {
-//                    printf(    "<%3d> compilation directory : \"%s\"\n",
-//                        level,name);
+                    dfprintf(__LINE__,__FILE__,TRACEDWARFDIR,"<%3d> compilation directory : \"%s\"\n",
+                        level,name);
                 }
             }
             if(aform == DW_AT_stmt_list) {
@@ -390,6 +409,7 @@ print_die_data(Dwarf_Debug dbg, Dwarf_Die print_me,int level,
 
     if(res == DW_DLV_ERROR) {
         printf("Error in dwarf_diename , level %d \n",level);
+        dfprintf(__LINE__,__FILE__,TRACE,"Error in dwarf_diename , level %d \n",level);
         exit(1);
     }
     if(res == DW_DLV_NO_ENTRY) {
@@ -399,18 +419,20 @@ print_die_data(Dwarf_Debug dbg, Dwarf_Die print_me,int level,
     res = dwarf_tag(print_me,&tag,&error);
     if(res != DW_DLV_OK) {
         printf("Error in dwarf_tag , level %d \n",level);
+        dfprintf(__LINE__,__FILE__,TRACE,"Error in dwarf_tag , level %d \n",level);
         exit(1);
     }
     res = dwarf_get_TAG_name(tag,&tagname);
     if(res != DW_DLV_OK) {
         printf("Error in dwarf_get_TAG_name , level %d \n",level);
+        dfprintf(__LINE__,__FILE__,TRACE,"Error in dwarf_get_TAG_name , level %d \n",level);
         exit(1);
     }
     if(namesoptionon) {
         if( tag == DW_TAG_subprogram) {
-//            printf(    "<%3d> subprogram            : \"%s\"\n",level,name);
+            dfprintf(__LINE__,__FILE__,TRACEDWARFDIE,"<%3d> subprogram            : \"%s\"\n",level,name);
             if (!strcmp (name , szFunctionName)) {
-//            	printf("%s found!!!!!\n",name);
+            	dfprintf(__LINE__,__FILE__,TRACEDWARFDIE,"%s found!!!!!\n",name);
             	found = 1;
             }
             print_subprog(dbg,print_me,level,sf, lluSubAdd);
@@ -419,7 +441,7 @@ print_die_data(Dwarf_Debug dbg, Dwarf_Die print_me,int level,
             tag == DW_TAG_type_unit) {
 
             resetsrcfiles(dbg,sf);
-//            printf(    "<%3d> source file           : \"%s\"\n",level,name);
+            dfprintf(__LINE__,__FILE__,TRACEDWARFDIE,"<%3d> source file           : \"%s\"\n",level,name);
             print_comp_dir(dbg,print_me,level,sf);
         }
     } else {
