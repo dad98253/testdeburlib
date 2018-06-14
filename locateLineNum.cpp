@@ -45,7 +45,11 @@
 #include <errno.h>
 #include <string.h>
 #include <dwarf.h>
+#ifdef BSD
+#include </usr/local/include/libdwarf.h>
+#else
 #include <libdwarf.h>
+#endif
 #include <err.h>
 #include "debug.h"
 #include "debug01.h"
