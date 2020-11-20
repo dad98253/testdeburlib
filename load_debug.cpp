@@ -134,49 +134,20 @@ void load_debug ()
 	}
 
 //	iDebugOutputDevice = iDebugOutputDeviceSave;
-//	if (debugflag > 0) {
+	if ( DBGLVLTEST > NONE ) {
 		if ( set_debug_device(myoptions.debug_device) ) {
 			fprintf(stderr,"set_debug_device failed\n");
 		} else {
 			dfprintf(__LINE__,__FILE__,DEBUGINIT,"\33[1;32mDebug output device set to type %i\33[0m (%s)\n", iDebugOutputDevice,debug_devices[iDebugOutputDevice]);
-			iflagset = 0;
-#ifdef JUMBO_JTR
-			iflagset = 1;
-#endif
-			dfprintf(__LINE__,__FILE__,DEBUGINIT,"\33[1;32m JUMBO_JTR is %s\33[0m\n", isset[iflagset]);
-			iflagset = 0;
-#ifdef BENCH_BUILD
-			iflagset = 1;
-#endif
-			dfprintf(__LINE__,__FILE__,DEBUGINIT,"\33[1;32m BENCH_BUILD is %s\33[0m\n", isset[iflagset]);
 			iflagset = 0;
 #ifdef _MSC_VER
 			iflagset = 1;
 #endif
 			dfprintf(__LINE__,__FILE__,DEBUGINIT,"\33[1;32m _MSC_VER is %s\33[0m\n", isset[iflagset]);
 			iflagset = 0;
-#ifdef ARCH_ALLOWS_UNALIGNED
-			iflagset = 1;
-#endif
-			dfprintf(__LINE__,__FILE__,DEBUGINIT,"\33[1;32m ARCH_ALLOWS_UNALIGNED is %s\33[0m\n", isset[iflagset]);
-			iflagset = 0;
-#ifdef HAVE_OPENCL
-			iflagset = 1;
-#endif
-			dfprintf(__LINE__,__FILE__,DEBUGINIT,"\33[1;32m HAVE_OPENCL is %s\33[0m\n", isset[iflagset]);
-			iflagset = 0;
-#ifdef HAVE_CUDA
-			iflagset = 1;
-#endif
-			dfprintf(__LINE__,__FILE__,DEBUGINIT,"\33[1;32m HAVE_CUDA is %s\33[0m\n", isset[iflagset]);
-			iflagset = 0;
-#ifdef DYNA_SALT_DEBUG
-			iflagset = 1;
-#endif
-			dfprintf(__LINE__,__FILE__,DEBUGINIT,"\33[1;32m DYNA_SALT_DEBUG is %s\33[0m\n", isset[iflagset]);
 		}
 		if ( bdebug_flag_set[QUIET] ) debugVirbosity = 0;
 
-//	}
+	}
 	return;
 }

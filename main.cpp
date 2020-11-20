@@ -9,11 +9,13 @@
 #undef _GNU_SOURCE
 #define _GNU_SOURCE 1 /* for strcasestr in legacy builds */
 
+#define MAINDEFS
 #include <stdio.h>
 #include <string.h>
 #include "debug.h"
 #include "debug01.h"
 #include "options.h"
+#include "listconf.h"
 
 
 #ifdef WINDOZE
@@ -80,7 +82,7 @@ int main (int argc, char **argv)
 #endif	// DEBUG
 	pmyoptions = &myoptions;
 	int retval = 0;
-	if( ( retval = debug_init ((void**)&pmyoptions, 1 )) ) {
+	if( ( retval = debug_init ((void**)&pmyoptions, 0 )) ) {
 		printf("bad debug init\n");
 		return(retval);
 	}
@@ -109,11 +111,10 @@ int main (int argc, char **argv)
 
 	dfprintf(__LINE__,__FILE__,TRACE,"checking for help call\n");
 	int show_usage = 0;
-	if (argc < 2 ||
-            (argc == 2 &&
+	if (argc == 2 &&
              (!_stricmp(argv[1], "--help") ||
               !_stricmp(argv[1], "-h") ||
-              !_stricmp(argv[1], "-help"))))
+              !_stricmp(argv[1], "-help")))
 	{
 		dfprintf(__LINE__,__FILE__,TRACE,"detected show usage request\n");
 		show_usage = 1;
@@ -126,6 +127,8 @@ int main (int argc, char **argv)
 	load_debug ();
 
 	dfprintf(__LINE__,__FILE__,TRACE,"returned from load_debug...\n");
+    if (options.listconf) listconf_parse_early();
+
 
 /*
 	if( ( retval = set_debug_device ((char*)"RAM") ) ) {
