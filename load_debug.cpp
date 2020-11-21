@@ -138,12 +138,12 @@ void load_debug ()
 		if ( set_debug_device(myoptions.debug_device) ) {
 			fprintf(stderr,"set_debug_device failed\n");
 		} else {
-			dfprintf(__LINE__,__FILE__,DEBUGINIT,"\33[1;32mDebug output device set to type %i\33[0m (%s)\n", iDebugOutputDevice,debug_devices[iDebugOutputDevice]);
+			dfprintf2(__LINE__,__FILE__,DEBUGINIT,"\33[1;32mDebug output device set to type %i\33[0m (%s)\n", iDebugOutputDevice,debug_devices[iDebugOutputDevice]);
 			iflagset = 0;
 #ifdef _MSC_VER
 			iflagset = 1;
 #endif
-			dfprintf(__LINE__,__FILE__,DEBUGINIT,"\33[1;32m _MSC_VER is %s\33[0m\n", isset[iflagset]);
+			dfprintf2(__LINE__,__FILE__,DEBUGINIT,"\33[1;32m _MSC_VER is %s\33[0m\n", isset[iflagset]);
 			iflagset = 0;
 		}
 		if ( bdebug_flag_set[QUIET] ) debugVirbosity = 0;

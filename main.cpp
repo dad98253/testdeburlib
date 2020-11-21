@@ -113,24 +113,24 @@ int main (int argc, char **argv)
 
 
 
-	dfprintf(__LINE__,__FILE__,TRACE,"checking for help call\n");
+	dfprintf2(__LINE__,__FILE__,TRACE,"checking for help call\n");
 	int show_usage = 0;
 	if (argc == 2 &&
              (!_stricmp(argv[1], "--help") ||
               !_stricmp(argv[1], "-h") ||
               !_stricmp(argv[1], "-help")))
 	{
-		dfprintf(__LINE__,__FILE__,TRACE,"detected show usage request\n");
+		dfprintf2(__LINE__,__FILE__,TRACE,"detected show usage request\n");
 		show_usage = 1;
 	}
 
-	dfprintf(__LINE__,__FILE__,TRACE,"calling opt_init...\n");
+	dfprintf2(__LINE__,__FILE__,TRACE,"calling opt_init...\n");
 	opt_init(szProgFilename, argc, argv, show_usage);
 
-	dfprintf(__LINE__,__FILE__,TRACE,"calling load_debug...\n");
+	dfprintf2(__LINE__,__FILE__,TRACE,"calling load_debug...\n");
 	load_debug ();
 
-	dfprintf(__LINE__,__FILE__,TRACE,"returned from load_debug...\n");
+	dfprintf2(__LINE__,__FILE__,TRACE,"returned from load_debug...\n");
     if (options.listconf) listconf_parse_early();
 
 
@@ -140,26 +140,35 @@ int main (int argc, char **argv)
 		return(retval);
 	}
 */
-
+// test old type dfprintf2
+    /*
+#ifdef WINDOZE
+		if (debugflag & (DEBUGINPUT | DEBUGOUTPUT | DEBUGSETTINGSINPUT)) dfprintf(fp9, "%s version %s compiled on %s at %s\n%s compiler version %i\n",
+				strProductName, strProductVersion,__DATE__,__TIME__,"MS Visual C",_MSC_VER);
+#else	// WINDOZE
+		if (debugflag & (DEBUGINPUT | DEBUGOUTPUT | DEBUGSETTINGSINPUT)) dfprintf(fp9, "%s version %s compiled on %s at %s\n%s compiler version %i.%i\n",
+				strProductName, strProductVersion,__DATE__,__TIME__,"GNU C",__GNUC__,__GNUC_MINOR__);
+#endif	// WINDOZE
+*/
 	// test jtrunwind
 #ifndef WINDOZE
 	printf("\tjtrunwind (-1) =%s\n",jtrunwind (-1));
-	dfprintf(__LINE__,__FILE__,TRACE,"returned from jtrunwind (-1)...\n");
+	dfprintf2(__LINE__,__FILE__,TRACE,"returned from jtrunwind (-1)...\n");
 	printf("\tjtrunwind (0) =%s\n",jtrunwind (0));
-	dfprintf(__LINE__,__FILE__,TRACE,"returned from jtrunwind (0)...\n");
+	dfprintf2(__LINE__,__FILE__,TRACE,"returned from jtrunwind (0)...\n");
 	printf("\tjtrunwind (1) =%s\n",jtrunwind (1));
-	dfprintf(__LINE__,__FILE__,TRACE,"returned from jtrunwind (1)...\n");
+	dfprintf2(__LINE__,__FILE__,TRACE,"returned from jtrunwind (1)...\n");
 	long long unsigned int lluRelAddress = 0x228;
 	const char * szFunctionName = "main";
 	char * szExeFile;
 	szExeFile = argv[0];
 	locateLineNum ( lluRelAddress ,  (char *)szFunctionName ,  szExeFile );
 	szMainExeFile = szExeFile;
-	dfprintf(__LINE__,__FILE__,TRACE,"calling jtrunwindln (-1)...\n");
+	dfprintf2(__LINE__,__FILE__,TRACE,"calling jtrunwindln (-1)...\n");
 	printf("\tjtrunwindln (-1) =%s\n",jtrunwindln (-1));
-	dfprintf(__LINE__,__FILE__,TRACE,"calling jtrunwindln (0)...\n");
+	dfprintf2(__LINE__,__FILE__,TRACE,"calling jtrunwindln (0)...\n");
 	printf("\tjtrunwindln (0) =%s\n",jtrunwindln (0));
-	dfprintf(__LINE__,__FILE__,TRACE,"calling jtrunwindln (1)...\n");
+	dfprintf2(__LINE__,__FILE__,TRACE,"calling jtrunwindln (1)...\n");
 	printf("\tjtrunwindln (1) =%s\n",jtrunwindln (1));
 #endif	// WINDOZE
 
