@@ -135,7 +135,7 @@ void load_debug ()
 
 //	iDebugOutputDevice = iDebugOutputDeviceSave;
 	if ( DBGLVLTEST > NONE ) {
-		if ( set_debug_device(myoptions.debug_device) ) {
+		if ( set_debug_device(myoptions.debug_device) < -1 ) {
 			fprintf(stderr,"set_debug_device failed\n");
 		} else {
 			dfprintf2(__LINE__,__FILE__,DEBUGINIT,"\33[1;32mDebug output device set to type %i\33[0m (%s)\n", iDebugOutputDevice,debug_devices[iDebugOutputDevice]);
