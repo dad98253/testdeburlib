@@ -86,7 +86,7 @@ int main (int argc, char **argv)
 #endif	// DEBUG
 	pmyoptions = &myoptions;
 	int retval = 0;
-	if( ( retval = debug_init ((void**)&pmyoptions, 0 )) ) {
+	if( ( retval = debug_init ((void**)&pmyoptions, RAM)) ) {
 		printf("bad debug init\n");
 		return(retval);
 	}
