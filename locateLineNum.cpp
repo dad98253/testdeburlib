@@ -36,6 +36,7 @@
 
 */
 
+#include <stdio.h>
 #include <sys/types.h> /* For open() */
 #include <sys/stat.h>  /* For open() */
 #include <fcntl.h>     /* For open() */
@@ -46,7 +47,6 @@
 #include <unistd.h>     /* For close() */
 #include <dwarf.h>
 #endif  // WINDOZE
-#include <stdio.h>
 #include <errno.h>
 #include <string.h>
 
