@@ -3,6 +3,8 @@
 #include "lindows.h"
 #include <strings.h>
 #define _stricmp	strcasecmp
+#else
+//#include <Windows.h>
 #endif	// WINDOZE
 
 #define NEED_OS_FORK
@@ -31,7 +33,9 @@ BOOL bStdioRedirectedToConsole;
 DEBUGOPTIONSTYPE myoptions;
 DEBUGOPTIONSTYPE* pmyoptions = NULL;
 
+#ifndef WINDOZE
 int locateLineNum ( long long unsigned int lluRelAddress , char * szFunctionName , char * szExeFile );
+#endif	// WINDOZE
 extern char * jtrunwindln (int icall);
 extern char * szMainExeFile;
 
@@ -138,6 +142,7 @@ int main (int argc, char **argv)
 */
 
 	// test jtrunwind
+#ifndef WINDOZE
 	printf("\tjtrunwind (-1) =%s\n",jtrunwind (-1));
 	dfprintf(__LINE__,__FILE__,TRACE,"returned from jtrunwind (-1)...\n");
 	printf("\tjtrunwind (0) =%s\n",jtrunwind (0));
@@ -156,7 +161,7 @@ int main (int argc, char **argv)
 	printf("\tjtrunwindln (0) =%s\n",jtrunwindln (0));
 	dfprintf(__LINE__,__FILE__,TRACE,"calling jtrunwindln (1)...\n");
 	printf("\tjtrunwindln (1) =%s\n",jtrunwindln (1));
-
+#endif	// WINDOZE
 
 	debug_close ();
 

@@ -55,6 +55,12 @@
 #define JTR_GIT_VERSION JOHN_VERSION
 #endif
 
+#ifdef WINDOZE 
+ //not #if defined(_WIN32) || defined(_WIN64) because we have strncasecmp in mingw
+#define strncasecmp _strnicmp
+#define strcasecmp _stricmp
+#endif
+
 /* Suboptions that can be used before full initialization, like --list=help */
 EXTERN void listconf_parse_early(void);
 

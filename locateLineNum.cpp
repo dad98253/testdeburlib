@@ -40,19 +40,29 @@
 #include <sys/stat.h>  /* For open() */
 #include <fcntl.h>     /* For open() */
 #include <stdlib.h>     /* For exit() */
+#ifdef WINDOZE
+#include "unistd.h"
+#else   // WINDOZE
 #include <unistd.h>     /* For close() */
+#include <dwarf.h>
+#endif  // WINDOZE
 #include <stdio.h>
 #include <errno.h>
 #include <string.h>
-#include <dwarf.h>
+
 #ifdef BSD
 #include </usr/local/include/libdwarf.h>
-#else
+#else   // BSD
+#ifndef WINDOZE
 #include <libdwarf.h>
-#endif
 #include <err.h>
+#endif  // WINDOZE
+#endif  // BSD
+
 #include "debug.h"
 #include "debug01.h"
+
+#ifndef WINDOZE
 
 struct srcfilesdata {
     char ** srcfiles;
@@ -458,5 +468,7 @@ print_die_data(Dwarf_Debug dbg, Dwarf_Die print_me,int level,
     }
     return(found);
 }
+
+#endif
 
 
