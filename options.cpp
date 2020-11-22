@@ -79,11 +79,12 @@ static struct opt_entry opt_list[] = {
 "test program for debuglib and getoptlib\n" \
 "Copyright (c) 2018-2020 " JOHN_COPYRIGHT "\n" \
 "Usage: %s [OPTIONS]\n" \
+"--help                     print usage summary\n" \
 "--list=WHAT                list capabilities, see --list=help\n" \
 "--data-folder=PATH         use PATH instead of ~\\Application Data for the\n" \
 "                           database folder\n" \
 "--gui-mode                 use gui mode (default)\n" \
-"--input-file-name=NAME     input file name\n" \
+"--input-file-name=NAME     input file name (used by text mode)\n" \
 "--master-password=NAME     database password (used in brief mode)\n" \
 "--recover                  use recover mode\n" \
 "--system-name=NAME         system name (used in brief mode)\n" \
@@ -125,18 +126,9 @@ static void print_usage(char *name)
 
 void opt_print_hidden_usage(void)
 {
-	puts("--help                     print usage summary");
-	puts("--data-folder=PATH         use PATH instead of ~\\Application Data for the");
-	puts("                           database folder");
-	puts("--gui-mode                 use gui mode (default)");
-	puts("--input-file-name=NAME     input file name");
-	puts("--master-password=NAME     database password (used in brief mode)");
-	puts("--recover                  use recover mode");
-	puts("--system-name=NAME         system name (used in brief mode)");
-	puts("--text-mode                use text mode");
 	puts("");
 	puts("note: use of both --master-password and --system-name invokes a special \"brief\"");
-	puts("      mode unless overriden by --text-mode or --gui-mode options,\n");
+	puts("      mode unless overriden by --text-mode or --gui-mode options\n");
 }
 
 #ifdef DEBUG
