@@ -48,7 +48,30 @@
 #define STR_MACRO(n)			_STR_VALUE(n)
 
 #define JOHN_VERSION			"1.0"
-#define JOHN_BLD "linux-gnu 64-bit"
+
+ // Check windows
+#if _WIN32 || _WIN64
+#if _WIN64
+#define ENVIRONMENT	"64 bit"
+#else   // _WIN64
+#define ENVIRONMENT	"32 bit"
+#endif  // _WIN64
+// Check GCC
+#elif __GNUC__
+#if __x86_64__ || __ppc64__
+#define ENVIRONMENT	"64 bit"
+#else   // __x86_64__
+#define ENVIRONMENT	"32 bit"
+#endif  // __x86_64__
+#else   // not windows or gnuc
+#define ENVIRONMENT	""
+#endif
+
+#ifdef WINDOZE
+#define JOHN_BLD "Windows " ENVIRONMENT
+#else   // WINDOZE
+#define JOHN_BLD "linux-gnu " ENVIRONMENT
+#endif  // WINDOZE
 #define JTR_GIT_VERSION ""
 #if JTR_RELEASE_BUILD
 #undef JTR_GIT_VERSION

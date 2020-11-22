@@ -103,7 +103,7 @@ static void listconf_list_build_info(void)
 // "15.00.20706.01".
 //
 #ifdef _MSC_FULL_VER
-	printf("Microsoft compiler version: %d\n", _MSC_FULL_VER);
+	printf("Microsoft Visual C version: %d, build %d\n", _MSC_VER, _MSC_FULL_VER);
 #else
 	printf("Microsoft compiler version: %d\n", _MSC_VER);
 #endif
@@ -120,7 +120,7 @@ static void listconf_list_build_info(void)
 	       __GLIBC__, __GLIBC_MINOR__, gnu_get_libc_version());
 #endif
 #endif
-
+	printf("Compile date and time: %s %s\n", __DATE__, __TIME__);
 	// OK, now append debugging options, BUT only output  something if
 	// one or more of them is set. IF none set, be silent.
 
